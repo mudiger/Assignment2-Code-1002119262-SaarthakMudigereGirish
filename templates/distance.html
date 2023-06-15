@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Distance</title>
+{% endblock %}
+
+{% block body %}
+    <div>
+        <form method="POST">
+            <label for="lat">Enter latitude: </label>
+            <input type="number" id="lat" name="lat">
+            <label for="long">Enter longitude: </label>
+            <input type="number" id="long" name="long">
+            <label for="distance">Enter distance: </label>
+            <input type="number" id="distance" name="distance">
+            <input type="submit" value="Submit" placeholder="Submit"><br>
+        </form>
+
+
+        {% if salpics %}
+            <h2>The earthquakes inside {{distance}}km radius are: </h2>
+            <ul style="list-style-type:none">
+                {% for salpic in salpics %}
+                <table>
+                    <tr>
+                        <td>{{salpic[0]}}</td>
+                        <td>{{salpic[1]}}</td>
+                        <td>{{salpic[2]}}</td>
+                        <td>{{salpic[3]}}</td>
+                        <td>{{salpic[4]}}</td>
+                        <td>{{salpic[5]}}</td>
+                        <td>{{salpic[6]}}</td>
+                        <td>{{salpic[7]}}</td>
+                        <td>{{salpic[8]}}</td>
+                        <td>{{salpic[9]}}</td>
+                        <td>{{salpic[10]}}</td>
+                        <td>{{salpic[11]}}</td>
+                    </tr>
+                </table>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Time</title>
+{% endblock %}
+
+{% block body %}
+    <div>
+        {% if night_count>day_count %}
+            <h2>Yes, large magnitude occurs during nighttime because of number of earthquakes during night time {{night_count}} is greater than day time {{day_count}} </h2>
+        {% else %}
+               <h2>No, large magnitude occurs during daytime because of number of earthquakes during night time {{night_count}} is less than day time {{day_count}} </h2>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
