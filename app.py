@@ -3,7 +3,6 @@ from flask import Flask
 from flask import render_template
 import pyodbc
 import os
-from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -45,8 +44,8 @@ def picture():
         query2 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag>?"
         cursor.execute(query2, count)
         num = cursor.fetchone()
-        n =num[0]
-    return render_template("count.html", count=count, salpics=salpics, n=n)
+        n = num[0]
+    return render_template("1)count.html", count=count, salpics=salpics, n=n)
 
 
 @app.route("/range/", methods=['GET', 'POST'])
@@ -70,7 +69,7 @@ def range():
         else:
             for i in row:
                 salpics.append(i)
-    return render_template("range.html", range=range, salpics=salpics, system=system)
+    return render_template("2)range.html", range=range, salpics=salpics, system=system)
 
 
 @app.route("/distance/", methods=['GET', 'POST'])
@@ -89,20 +88,39 @@ def distance():
         row = cursor.fetchall()
         for i in row:
             salpics.append(i)
-    return render_template("distance.html", salpics=salpics, distance=distance)
+    return render_template("3)distance.html", salpics=salpics, distance=distance)
 
+
+@app.route("/cluster/", methods=['GET', 'POST'])
+def cluster():
+    salpics = []
+    count = ""
+    n = ""
+    if request.method == "POST":
+        count = request.form.get('count')
+
+        query = "SELECT * FROM dbo.all_month WHERE mag=?"
+        cursor.execute(query, count)
+
+        rows = cursor.fetchall()
+        for i in rows:
+            salpics.append(i)
+
+        query2 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag=?"
+        cursor.execute(query2, count)
+        num = cursor.fetchone()
+        n = num[0]
+    return render_template("4)cluster.html", count=count, salpics=salpics, n=n)
 
 
 @app.route("/time/", methods=['GET', 'POST'])
 def time():
-    query1 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag>4.0 AND CAST(time AS TIME) > '18:00:00'"
-    cursor.execute(query1)
-    night_count = cursor.fetchone()
-    query2 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag>4.0 AND CAST(time AS TIME) < '18:00:00'"
-    cursor.execute(query2)
-    day_count = cursor.fetchone()
-
-    return render_template("time.html", night_count=night_count[0], day_count=day_count[0])
+    query = "SELECT CASE WHEN DATEPART(HOUR, [time]) >= 18 OR DATEPART(HOUR, [time]) < 6 THEN 'Night-time (6 PM - 6 AM)' ELSE 'Day-time (6 AM - 6 PM)' END AS time_range, COUNT(*) AS earthquake_count FROM [dbo].[all_month] WHERE mag > 4 GROUP BY CASE WHEN DATEPART(HOUR, [time]) >= 18 OR DATEPART(HOUR, [time]) < 6 THEN 'Night-time (6 PM - 6 AM)' ELSE 'Day-time (6 AM - 6 PM)' END"
+    cursor.execute(query)
+    count = cursor.fetchall()
+    night_count=count[1]
+    day_count = count[0]
+    return render_template("5)time.html", night_count=night_count[1], day_count=day_count[1])
 
 
 if __name__ == "__main__":

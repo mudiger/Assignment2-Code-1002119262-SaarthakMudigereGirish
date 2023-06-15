@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Count</title>
+{% endblock %}
+
+{% block body %}
+    <div>
+        <form method="POST">
+            <label for="count">Enter magnitude: </label>
+            <input type="number" step=0.01 id="count" name="count">
+            <input type="submit" value="Submit" placeholder="Submit"><br>
+        </form>
+
+        {% if count %}
+            <h2>Magnitude equal to {{count}} is: {{n}}(count)</h2>
+        {% endif %}
+
+        {% if salpics %}
+            <ul style="list-style-type:none">
+                {% for salpic in salpics %}
+                <table>
+                    <tr>
+                        <td>{{salpic[0]}}</td>
+                        <td>{{salpic[1]}}</td>
+                        <td>{{salpic[2]}}</td>
+                        <td>{{salpic[3]}}</td>
+                        <td>{{salpic[4]}}</td>
+                        <td>{{salpic[5]}}</td>
+                        <td>{{salpic[6]}}</td>
+                        <td>{{salpic[7]}}</td>
+                        <td>{{salpic[8]}}</td>
+                        <td>{{salpic[9]}}</td>
+                        <td>{{salpic[10]}}</td>
+                        <td>{{salpic[11]}}</td>
+                    </tr>
+                </table>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
