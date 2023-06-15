@@ -31,6 +31,7 @@ def index():
 def picture():
     salpics = []
     count = ""
+    n = ""
     if request.method == "POST":
         count = request.form.get('count')
 
@@ -40,7 +41,12 @@ def picture():
         rows = cursor.fetchall()
         for i in rows:
             salpics.append(i)
-    return render_template("count.html", count=count, salpics=salpics)
+
+        query2 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag>?"
+        cursor.execute(query2, count)
+        num = cursor.fetchone()
+        n =num[0]
+    return render_template("count.html", count=count, salpics=salpics, n=n)
 
 
 @app.route("/range/", methods=['GET', 'POST'])
