@@ -61,7 +61,7 @@ def range():
         days = request.form['days']
         print(days)
         # Execute a simple select query
-        query = f"SELECT TOP ({days}) * FROM dbo.all_month WHERE mag BETWEEN ? AND ?"
+        query = f"SELECT * FROM dbo.all_month WHERE mag BETWEEN ? AND ? AND CAST(time AS DATE) BETWEEN '2023-06-01' AND '2023-06-{days}'"
         cursor.execute(query, min, max)
         row = cursor.fetchall()
         if row is None:
