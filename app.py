@@ -18,7 +18,6 @@ conn = pyodbc.connect(f'DRIVER={driver};SERVER={server};DATABASE={database};UID=
 
 # Create a cursor object
 cursor = conn.cursor()
-print(cursor)
 
 
 @app.route("/")
@@ -50,18 +49,21 @@ def picture():
 
 @app.route("/range/", methods=['GET', 'POST'])
 def range():
-    min = ""
-    max = ""
     system = ""
     salpics = []
-    days = ""
     if request.method == "POST":
         min = request.form['min']
         max = request.form['max']
-        days = request.form['days']
-        print(days)
-        # Execute a simple select query
-        query = f"SELECT * FROM dbo.all_month WHERE mag BETWEEN ? AND ? AND CAST(time AS DATE) BETWEEN '2023-06-01' AND '2023-06-{days}'"
+        days = int(request.form['days'])
+        days+=14
+        if days>31:
+            d = 6
+            days -= 31
+        else:
+            d = 5
+
+        print(d)
+        query = f"SELECT * FROM dbo.all_month WHERE (mag BETWEEN ? AND ?) AND CAST(time AS DATE) BETWEEN '2023-05-14' AND '2023-0{d}-{days}' ORDER BY time"
         cursor.execute(query, min, max)
         row = cursor.fetchall()
         if row is None:
@@ -82,8 +84,7 @@ def distance():
         long = request.form['long']
         distance = request.form['distance']
 
-        query = "SELECT * FROM dbo.all_month WHERE ( 6371 * ACOS(COS(RADIANS(latitude)) * COS(RADIANS(?)) * COS(" \
-                "RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(latitude)) * SIN(RADIANS(?)) )) <=? ; "
+        query = "SELECT * FROM dbo.all_month WHERE ( 6371 * ACOS(COS(RADIANS(latitude)) * COS(RADIANS(?)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(latitude)) * SIN(RADIANS(?)) ))< ?"
         cursor.execute(query, lat, long, lat, distance)
         row = cursor.fetchall()
         for i in row:
